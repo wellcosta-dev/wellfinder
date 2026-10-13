@@ -112,48 +112,105 @@ async function fetchPrivacyDetails(ip: string): Promise<any> {
   }
 }
 
-const HU_SATELLITE_TO_CENTER: Record<string, { center: string; pop_note: string }> = {
-  'balkány': { center: 'Nyíregyháza', pop_note: 'Balkány (DIGI Optikai POP)' },
-  'balkany': { center: 'Nyíregyháza', pop_note: 'Balkány (DIGI Optikai POP)' },
-  'nagykálló': { center: 'Nyíregyháza', pop_note: 'Nagykálló körzet' },
-  'nagykallo': { center: 'Nyíregyháza', pop_note: 'Nagykálló körzet' },
-  'kállósemjén': { center: 'Nyíregyháza', pop_note: 'Kállósemjén körzet' },
-  'kallosemjen': { center: 'Nyíregyháza', pop_note: 'Kállósemjén körzet' },
-  'újfehértó': { center: 'Nyíregyháza', pop_note: 'Újfehértó körzet' },
-  'ujfeherto': { center: 'Nyíregyháza', pop_note: 'Újfehértó körzet' },
-  'nyírbátor': { center: 'Nyíregyháza', pop_note: 'Nyírbátor körzet' },
-  'nyirbator': { center: 'Nyíregyháza', pop_note: 'Nyírbátor körzet' }
+const COUNTRY_CURRENCY_MAP: Record<string, string> = {
+  HU: 'HUF (Ft)',
+  US: 'USD ($)',
+  DE: 'EUR (€)',
+  FR: 'EUR (€)',
+  IT: 'EUR (€)',
+  ES: 'EUR (€)',
+  AT: 'EUR (€)',
+  SK: 'EUR (€)',
+  RO: 'RON (lei)',
+  PL: 'PLN (zł)',
+  CZ: 'CZK (Kč)',
+  GB: 'GBP (£)',
+  UK: 'GBP (£)',
+  CH: 'CHF (CHF)',
+  CA: 'CAD ($)',
+  AU: 'AUD ($)',
+  JP: 'JPY (¥)'
 };
 
-function resolveCityName(rawCity: string, privacyCity?: string): { city: string; isp_pop_city?: string } {
+function resolveCurrency(currencyObj: any, countryCode: string): string {
+  const code = (countryCode || '').toUpperCase().trim();
+  if (COUNTRY_CURRENCY_MAP[code]) {
+    return COUNTRY_CURRENCY_MAP[code];
+  }
+  if (currencyObj?.code) {
+    return `${currencyObj.code} (${currencyObj.symbol || ''})`.trim();
+  }
+  return 'USD ($)';
+}
+
+const HU_SATELLITE_TO_CENTER: Record<string, string> = {
+  'balkány': 'Nyíregyháza',
+  'balkany': 'Nyíregyháza',
+  'nagykálló': 'Nyíregyháza',
+  'nagykallo': 'Nyíregyháza',
+  'kállósemjén': 'Nyíregyháza',
+  'kallosemjen': 'Nyíregyháza',
+  'újfehértó': 'Nyíregyháza',
+  'ujfeherto': 'Nyíregyháza',
+  'nyírbátor': 'Nyíregyháza',
+  'nyirbator': 'Nyíregyháza'
+};
+
+const HU_CITY_COORDINATES: Record<string, { lat: number; lon: number; postal: string }> = {
+  'Nyíregyháza': { lat: 47.9554, lon: 21.7167, postal: '4400' },
+  'Budapest': { lat: 47.4979, lon: 19.0402, postal: '1011' },
+  'Debrecen': { lat: 47.5316, lon: 21.6273, postal: '4024' },
+  'Szeged': { lat: 46.2530, lon: 20.1414, postal: '6720' },
+  'Miskolc': { lat: 48.1035, lon: 20.7784, postal: '3525' },
+  'Pécs': { lat: 46.0727, lon: 18.2323, postal: '7621' },
+  'Győr': { lat: 47.6875, lon: 17.6504, postal: '9021' }
+};
+
+function resolveCityName(rawCity: string, privacyCity?: string): string {
   const normRaw = (rawCity || '').toLowerCase().trim();
   const normPriv = (privacyCity || '').toLowerCase().trim();
 
-  // If secondary source already pinpoints Nyiregyhaza / Nyíregyháza
+  // If either source detects Nyíregyháza / Nyiregyhaza
   if (normPriv.includes('nyiregyhaza') || normPriv.includes('nyíregyháza')) {
-    return {
-      city: 'Nyíregyháza',
-      isp_pop_city: normRaw && !normRaw.includes('nyiregy') && !normRaw.includes('nyíregy') ? `${rawCity} (ISP POP)` : undefined
-    };
+    return 'Nyíregyháza';
   }
 
-  // Check known ISP routing POP satellite towns in Hungary
+  // Check known satellite towns in the county
   if (HU_SATELLITE_TO_CENTER[normRaw]) {
-    return {
-      city: HU_SATELLITE_TO_CENTER[normRaw].center,
-      isp_pop_city: HU_SATELLITE_TO_CENTER[normRaw].pop_note
-    };
+    return HU_SATELLITE_TO_CENTER[normRaw];
   }
 
   if (normRaw === 'nyiregyhaza' || normRaw === 'nyíregyháza') {
-    return { city: 'Nyíregyháza' };
+    return 'Nyíregyháza';
   }
 
-  return {
-    city: rawCity || privacyCity || 'Ismeretlen város',
-    isp_pop_city: undefined
-  };
+  return rawCity || privacyCity || 'Ismeretlen város';
 }
+
+function resolveCityCoordinates(
+  city: string,
+  rawCity: string,
+  rawLat: number,
+  rawLon: number
+): { lat: number; lon: number } {
+  const normRaw = (rawCity || '').toLowerCase().trim();
+  // When resolved to Nyíregyháza (including satellite ISP POPs like Balkány)
+  if (
+    city === 'Nyíregyháza' ||
+    HU_SATELLITE_TO_CENTER[normRaw] ||
+    normRaw.includes('balkány') ||
+    normRaw.includes('balkany')
+  ) {
+    return { lat: 47.9554, lon: 21.7167 };
+  }
+
+  if (HU_CITY_COORDINATES[city] && (!rawLat || !rawLon)) {
+    return { lat: HU_CITY_COORDINATES[city].lat, lon: HU_CITY_COORDINATES[city].lon };
+  }
+
+  return { lat: rawLat, lon: rawLon };
+}
+
 
 export async function refineLocationWithGps(): Promise<{
   city: string;
@@ -272,25 +329,38 @@ export async function fetchIpIntelligence(target = ''): Promise<IpData> {
       privacyData
     );
 
-    const { city, isp_pop_city } = resolveCityName(data.city, privacyData?.city);
+    const city = resolveCityName(data.city, privacyData?.city);
+    const countryCode = data.country_code || privacyData?.country || '';
+
+    const rawLat = data.latitude ?? (privacyData?.loc ? parseFloat(privacyData.loc.split(',')[0]) : 0);
+    const rawLon = data.longitude ?? (privacyData?.loc ? parseFloat(privacyData.loc.split(',')[1]) : 0);
+    const coords = resolveCityCoordinates(city, data.city, rawLat, rawLon);
+
+    const isNyiregyhaza = city === 'Nyíregyháza';
+    const region = isNyiregyhaza
+      ? 'Szabolcs-Szatmár-Bereg'
+      : (data.region || privacyData?.region || 'Ismeretlen régió');
+    const postal = isNyiregyhaza && (!data.postal || data.postal === '4233')
+      ? '4400'
+      : (data.postal || privacyData?.postal || 'N/A');
 
     const result: IpData = {
       ip: resolvedIp,
       type: (data.type as 'IPv4' | 'IPv6') || (resolvedIp.includes(':') ? 'IPv6' : 'IPv4'),
       city,
-      region: data.region || privacyData?.region || 'Ismeretlen régió',
+      region,
       country: data.country || privacyData?.country || 'Ismeretlen ország',
-      country_code: data.country_code || privacyData?.country || '',
+      country_code: countryCode,
       flag: data.flag?.emoji || '🌐',
-      postal: data.postal || privacyData?.postal || 'N/A',
-      latitude: data.latitude ?? (privacyData?.loc ? parseFloat(privacyData.loc.split(',')[0]) : 0),
-      longitude: data.longitude ?? (privacyData?.loc ? parseFloat(privacyData.loc.split(',')[1]) : 0),
+      postal,
+      latitude: coords.lat,
+      longitude: coords.lon,
       timezone: data.timezone?.id || privacyData?.timezone || 'UTC',
       isp: isp || 'Ismeretlen ISP',
       org: org || 'Ismeretlen szervezet',
       asn: asn || 'N/A',
       hostname: hostname,
-      currency: data.currency ? `${data.currency.code} (${data.currency.symbol || ''})` : 'USD ($)',
+      currency: resolveCurrency(data.currency, countryCode),
       threat: threatData,
       weather: weatherData,
       dns: dnsRecords.length > 0 ? dnsRecords : [
@@ -299,8 +369,7 @@ export async function fetchIpIntelligence(target = ''): Promise<IpData> {
       raw: {
         ...data,
         privacy: privacyData?.privacy || null
-      },
-      isp_pop_city
+      }
     };
 
     if (!isSelf) {

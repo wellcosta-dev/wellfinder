@@ -9,6 +9,7 @@ import {
 import { IpData, Language } from '../../types/ip';
 import { fetchIpIntelligence, cleanTarget } from '../../services/ipService';
 import { translations } from '../../i18n/translations';
+import { CountryFlag } from '../common/CountryFlag';
 
 interface BatchViewProps {
   lang: Language;
@@ -136,9 +137,9 @@ export const BatchView: React.FC<BatchViewProps> = ({ lang }) => {
 
   return (
     <div className="space-y-6">
-      <div className="bg-[#161826] border border-[#24283d] rounded-2xl p-5 sm:p-6 shadow-xl backdrop-blur-md">
+      <div className="bg-[#161826] border border-[#24283d] rounded-[5px] p-5 sm:p-6 shadow-xl backdrop-blur-md">
         <h3 className="text-lg font-bold text-[#e9e9ed] mb-1.5 flex items-center gap-2">
-          <ListPlus className="w-5 h-5 text-brand-300" />
+          <ListPlus className="w-5 h-5 text-[#9b8cf0]" />
           <span>{t.batch.title}</span>
         </h3>
         <p className="text-xs text-[#9a9eb2] mb-4">
@@ -150,7 +151,7 @@ export const BatchView: React.FC<BatchViewProps> = ({ lang }) => {
           value={inputVal}
           onChange={(e) => setInputVal(e.target.value)}
           placeholder={t.batch.placeholder}
-          className="w-full p-3.5 bg-obsidian-950/90 border border-[#2d324d] rounded-xl text-xs font-mono text-[#e9e9ed] placeholder:text-[#6a6f8a] focus:outline-none focus:ring-1 focus:ring-brand-400 mb-3"
+          className="w-full p-3.5 bg-obsidian-950/90 border border-[#2d324d] rounded-[5px] text-xs font-mono text-[#e9e9ed] placeholder:text-[#6a6f8a] focus:outline-none focus:ring-1 focus:ring-[#836fe8] mb-3"
         />
 
         {/* Progress Bar if loading */}
@@ -160,9 +161,9 @@ export const BatchView: React.FC<BatchViewProps> = ({ lang }) => {
               <span>Feldolgozás alatt...</span>
               <span className="font-mono">{progress}%</span>
             </div>
-            <div className="h-2 w-full bg-obsidian-950 rounded-full overflow-hidden border border-[#24283d]">
+            <div className="h-2 w-full bg-obsidian-950 rounded-[2px] overflow-hidden border border-[#24283d]">
               <div
-                className="h-full bg-brand-500 transition-all duration-300"
+                className="h-full bg-[#836fe8] transition-all duration-300"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -173,12 +174,12 @@ export const BatchView: React.FC<BatchViewProps> = ({ lang }) => {
           <button
             onClick={handleRunBatch}
             disabled={loading}
-            className="px-6 py-2.5 bg-brand-500 hover:bg-brand-400 text-obsidian-950 font-semibold text-xs rounded-xl transition flex items-center gap-2 shadow-sm disabled:opacity-50"
+            className="px-6 py-2.5 bg-[#836fe8] hover:bg-[#725ee4] active:bg-[#624ed4] text-white font-medium text-xs rounded-[5px] transition flex items-center gap-2 shadow-sm disabled:opacity-50"
           >
             {loading ? (
               <RefreshCw className="w-3.5 h-3.5 animate-spin" />
             ) : (
-              <Play className="w-3.5 h-3.5 fill-obsidian-950" />
+              <Play className="w-3.5 h-3.5 fill-white text-white" />
             )}
             <span>
               {t.batch.runButton} (
@@ -191,16 +192,16 @@ export const BatchView: React.FC<BatchViewProps> = ({ lang }) => {
             <div className="flex items-center gap-2">
               <button
                 onClick={exportCSV}
-                className="px-3.5 py-2 bg-obsidian-900 hover:bg-[#1f2235] text-[#e9e9ed] border border-[#24283d] text-xs rounded-xl flex items-center gap-1.5 transition font-medium"
+                className="px-3.5 py-2 bg-obsidian-900 hover:bg-[#1f2235] text-[#e9e9ed] border border-[#24283d] text-xs rounded-[5px] flex items-center gap-1.5 transition font-medium"
               >
-                <Download className="w-3.5 h-3.5 text-brand-300" />
+                <Download className="w-3.5 h-3.5 text-[#9b8cf0]" />
                 <span>{t.batch.exportCsv}</span>
               </button>
               <button
                 onClick={exportJSON}
-                className="px-3.5 py-2 bg-obsidian-900 hover:bg-[#1f2235] text-[#e9e9ed] border border-[#24283d] text-xs rounded-xl flex items-center gap-1.5 transition font-medium"
+                className="px-3.5 py-2 bg-obsidian-900 hover:bg-[#1f2235] text-[#e9e9ed] border border-[#24283d] text-xs rounded-[5px] flex items-center gap-1.5 transition font-medium"
               >
-                <Download className="w-3.5 h-3.5 text-brand-300" />
+                <Download className="w-3.5 h-3.5 text-[#9b8cf0]" />
                 <span>{t.batch.exportJson}</span>
               </button>
             </div>
@@ -210,7 +211,7 @@ export const BatchView: React.FC<BatchViewProps> = ({ lang }) => {
 
       {/* Results Table */}
       {results.length > 0 && (
-        <div className="bg-[#161826] border border-[#24283d] rounded-2xl overflow-hidden shadow-xl backdrop-blur-md">
+        <div className="bg-[#161826] border border-[#24283d] rounded-[5px] overflow-hidden shadow-xl backdrop-blur-md">
           {/* Table Toolbar */}
           <div className="p-4 sm:p-5 border-b border-[#24283d] flex items-center justify-between flex-wrap gap-2">
             <span className="text-sm font-semibold text-[#e9e9ed]">
@@ -224,9 +225,9 @@ export const BatchView: React.FC<BatchViewProps> = ({ lang }) => {
                 <button
                   key={lvl}
                   onClick={() => setFilterLevel(lvl)}
-                  className={`px-2.5 py-1 rounded-lg font-mono text-[11px] font-semibold transition ${
+                  className={`px-2.5 py-1 rounded-[5px] font-mono text-[11px] font-semibold transition ${
                     filterLevel === lvl
-                      ? 'bg-brand-500 text-obsidian-950'
+                      ? 'bg-[#836fe8] text-white'
                       : 'bg-obsidian-950 border border-[#24283d] text-[#9a9eb2] hover:text-[#e9e9ed]'
                   }`}
                 >
@@ -252,7 +253,7 @@ export const BatchView: React.FC<BatchViewProps> = ({ lang }) => {
                 {filteredResults.map((item, idx) => (
                   <tr key={idx} className="hover:bg-white/[0.02] transition">
                     <td className="p-4 font-bold text-[#e9e9ed] flex items-center gap-2">
-                      <span className="text-lg">{item.flag}</span>
+                      <CountryFlag countryCode={item.country_code} className="w-4 h-3 rounded-[2px]" />
                       <span>{item.ip}</span>
                     </td>
                     <td className="p-4 text-[#c2c5d8] font-sans">
@@ -264,12 +265,12 @@ export const BatchView: React.FC<BatchViewProps> = ({ lang }) => {
                     >
                       {item.isp}
                     </td>
-                    <td className="p-4 text-brand-300 text-[11px]">
+                    <td className="p-4 text-[#9b8cf0] text-[11px]">
                       {item.asn}
                     </td>
                     <td className="p-4 font-sans">
                       <span
-                        className={`px-2.5 py-1 rounded-md text-[10px] font-bold ${
+                        className={`px-2.5 py-1 rounded-[5px] text-[10px] font-bold ${
                           (item.threat?.risk_score || 0) > 50
                             ? 'bg-rose-500/15 text-rose-300 border border-rose-500/25'
                             : 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/25'

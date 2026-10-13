@@ -7,12 +7,11 @@ import {
   AlertTriangle,
   Info,
   Lock,
-  Calculator,
-  ChevronDown,
-  ChevronUp
+  Calculator
 } from 'lucide-react';
 import { ThreatData, Language } from '../../types/ip';
 import { translations } from '../../i18n/translations';
+import { ThreatBreakdownModal } from './ThreatBreakdownModal';
 
 interface ThreatCardProps {
   threat: ThreatData;
@@ -20,17 +19,17 @@ interface ThreatCardProps {
 }
 
 export const ThreatCard: React.FC<ThreatCardProps> = ({ threat, lang }) => {
-  const [showBreakdown, setShowBreakdown] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const t = translations[lang];
 
   const getThreatBadgeColor = () => {
     if (threat.threat_level === 'Low') {
-      return 'bg-emerald-500/10 text-emerald-300 border-emerald-500/20';
+      return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/25';
     }
     if (threat.threat_level === 'Medium') {
-      return 'bg-amber-500/10 text-amber-300 border-amber-500/20';
+      return 'bg-amber-500/10 text-amber-400 border-amber-500/25';
     }
-    return 'bg-rose-500/10 text-rose-300 border-rose-500/20';
+    return 'bg-rose-500/10 text-rose-400 border-rose-500/25';
   };
 
   const getProgressBarColor = () => {
@@ -40,16 +39,16 @@ export const ThreatCard: React.FC<ThreatCardProps> = ({ threat, lang }) => {
   };
 
   return (
-    <div className="bg-[#161826] border border-[#24283d] rounded-2xl p-5 shadow-xl flex flex-col justify-between">
+    <div className="bg-[#161826] border border-[#24283d] rounded-[5px] p-5 shadow-xl flex flex-col justify-between">
       <div>
         {/* Card Header */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2.5">
             <div
-              className={`p-2 rounded-xl border ${
+              className={`p-2 rounded-[5px] border ${
                 threat.is_vpn || threat.is_proxy || threat.is_tor
-                  ? 'bg-rose-500/10 text-rose-400 border-rose-500/20'
-                  : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                  ? 'bg-rose-500/10 text-rose-400 border-rose-500/25'
+                  : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/25'
               }`}
             >
               {threat.is_vpn || threat.is_proxy || threat.is_tor ? (
@@ -63,7 +62,7 @@ export const ThreatCard: React.FC<ThreatCardProps> = ({ threat, lang }) => {
             </h3>
           </div>
           <span
-            className={`text-[11px] font-medium px-2.5 py-0.5 rounded-full border ${getThreatBadgeColor()}`}
+            className={`text-xs font-semibold px-2.5 py-0.5 rounded-[5px] border ${getThreatBadgeColor()}`}
           >
             {threat.threat_level === 'Low'
               ? t.threat.low
@@ -76,13 +75,13 @@ export const ThreatCard: React.FC<ThreatCardProps> = ({ threat, lang }) => {
 
         {/* Highlight Banner if VPN is detected */}
         {threat.is_vpn && (
-          <div className="mb-4 p-3 rounded-xl bg-rose-950/40 border border-rose-500/30 text-xs flex items-center gap-2.5">
+          <div className="mb-4 p-3 rounded-[5px] bg-rose-950/40 border border-rose-500/30 text-xs flex items-center gap-2.5">
             <Lock className="w-4 h-4 text-rose-400 flex-shrink-0" />
-            <div className="truncate">
+            <div>
               <span className="font-semibold text-rose-300 block">
                 VPN / Proxy Csomópont Észlelve!
               </span>
-              <span className="text-[11px] text-[#c2c5d8] truncate block">
+              <span className="text-[11px] text-[#c2c5d8] block">
                 {threat.vpn_service ? `Szolgáltató: ${threat.vpn_service}` : 'Aktív titkosított alagút azonosítva.'}
               </span>
             </div>
@@ -97,168 +96,107 @@ export const ThreatCard: React.FC<ThreatCardProps> = ({ threat, lang }) => {
               {threat.risk_score} <span className="text-xs text-[#9a9eb2] font-normal">/ 100</span>
             </span>
           </div>
-          <div className="h-2 w-full bg-obsidian-950 rounded-full overflow-hidden border border-[#24283d]">
+          <div className="h-2 w-full bg-obsidian-950 rounded-[3px] overflow-hidden border border-[#24283d]">
             <div
-              className={`h-full rounded-full transition-all duration-700 ${getProgressBarColor()}`}
+              className={`h-full rounded-[3px] transition-all duration-700 ${getProgressBarColor()}`}
               style={{ width: `${threat.risk_score}%` }}
             />
           </div>
         </div>
 
-        {/* 4 Feature Badges Grid */}
-        <div className="grid grid-cols-2 gap-2 text-xs mb-3">
-          {/* VPN / Proxy */}
-          <div className="p-2.5 rounded-xl bg-obsidian-950/80 border border-[#24283d] flex items-center justify-between">
+        {/* Security Checks List - Clean, non-truncated rows */}
+        <div className="space-y-1.5 text-xs mb-3">
+          <div className="p-2 rounded-[5px] bg-obsidian-950/70 border border-[#24283d] flex items-center justify-between">
             <div className="flex items-center gap-1.5 text-[#9a9eb2]">
               <EyeOff className="w-3.5 h-3.5 text-[#6c728e]" />
               <span>{t.threat.vpnProxy}</span>
             </div>
             <span
-              className={`font-medium ${
+              className={`font-semibold text-[11px] ${
                 threat.is_vpn || threat.is_proxy
                   ? 'text-rose-400'
                   : 'text-emerald-400'
               }`}
             >
-              {threat.is_vpn || threat.is_proxy ? t.threat.yes : t.threat.no}
+              {threat.is_vpn || threat.is_proxy ? `● ${t.threat.yes}` : `● ${t.threat.no}`}
             </span>
           </div>
 
-          {/* Tor Exit Node */}
-          <div className="p-2.5 rounded-xl bg-obsidian-950/80 border border-[#24283d] flex items-center justify-between">
+          <div className="p-2 rounded-[5px] bg-obsidian-950/70 border border-[#24283d] flex items-center justify-between">
             <div className="flex items-center gap-1.5 text-[#9a9eb2]">
               <AlertTriangle className="w-3.5 h-3.5 text-[#6c728e]" />
               <span>{t.threat.torNode}</span>
             </div>
             <span
-              className={`font-medium ${
+              className={`font-semibold text-[11px] ${
                 threat.is_tor ? 'text-rose-400' : 'text-emerald-400'
               }`}
             >
-              {threat.is_tor ? t.threat.yes : t.threat.no}
+              {threat.is_tor ? `● ${t.threat.yes}` : `● ${t.threat.no}`}
             </span>
           </div>
 
-          {/* Datacenter */}
-          <div className="p-2.5 rounded-xl bg-obsidian-950/80 border border-[#24283d] flex items-center justify-between">
+          <div className="p-2 rounded-[5px] bg-obsidian-950/70 border border-[#24283d] flex items-center justify-between">
             <div className="flex items-center gap-1.5 text-[#9a9eb2]">
               <Server className="w-3.5 h-3.5 text-[#6c728e]" />
               <span>{t.threat.datacenter}</span>
             </div>
             <span
-              className={`font-medium ${
+              className={`font-semibold text-[11px] ${
                 threat.is_datacenter ? 'text-amber-400' : 'text-[#c2c5d8]'
               }`}
             >
-              {threat.is_datacenter ? t.threat.yes : t.threat.no}
+              {threat.is_datacenter ? `● ${t.threat.yes}` : `● ${t.threat.no}`}
             </span>
           </div>
 
-          {/* Network Type */}
-          <div className="p-2.5 rounded-xl bg-obsidian-950/80 border border-[#24283d] flex items-center justify-between">
-            <span className="text-[#9a9eb2]">{t.threat.networkType}</span>
+          {/* Full row for Network Type without cutoffs */}
+          <div className="p-2.5 rounded-[5px] bg-obsidian-950/70 border border-[#24283d] flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+            <span className="text-[#9a9eb2] font-medium">{t.threat.networkType}</span>
             <span
-              className="text-brand-300 truncate max-w-[85px] font-medium"
-              title={threat.network_type}
+              className="text-[#d2cefd] font-medium text-xs break-words"
             >
               {threat.network_type}
             </span>
           </div>
         </div>
 
-        {/* Detection Reasons */}
+        {/* Detection Reasons - Fully readable */}
         {threat.detection_reasons && threat.detection_reasons.length > 0 && (
-          <div className="space-y-1 mb-3">
+          <div className="space-y-1.5 mb-3">
             {threat.detection_reasons.map((reason, idx) => (
               <div
                 key={idx}
-                className="text-[10px] text-[#9a9eb2] bg-obsidian-950/60 px-2.5 py-1 rounded-lg border border-[#24283d] flex items-center gap-1.5 truncate"
-                title={reason}
+                className="text-[11px] text-[#c2c5d8] bg-obsidian-950/60 p-2 rounded-[5px] border border-[#24283d] flex items-start gap-2 leading-relaxed"
               >
-                <span className="w-1.5 h-1.5 rounded-full bg-brand-400 flex-shrink-0" />
-                <span className="truncate">{reason}</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-[#836fe8] flex-shrink-0 mt-1.5" />
+                <span>{reason}</span>
               </div>
             ))}
           </div>
         )}
 
-        {/* Transparent Score Breakdown Section */}
+        {/* Modal Trigger Button */}
         {threat.score_breakdown && (
-          <div className="mb-3">
-            <button
-              type="button"
-              onClick={() => setShowBreakdown(!showBreakdown)}
-              className="w-full text-left p-2.5 rounded-xl bg-obsidian-950/90 border border-brand-500/20 hover:border-brand-500/40 text-xs text-[#e9e9ed] flex items-center justify-between transition group"
-            >
-              <div className="flex items-center gap-2">
-                <Calculator className="w-3.5 h-3.5 text-brand-300 group-hover:scale-110 transition" />
-                <span className="font-medium text-brand-200">
-                  {lang === 'hu'
-                    ? `Miért pont ${threat.risk_score} / 100? Pontszámítás`
-                    : `Why ${threat.risk_score} / 100? Breakdown`}
-                </span>
-              </div>
-              <div className="flex items-center gap-1.5 text-[11px] text-[#9a9eb2]">
-                <span className="font-mono text-brand-300 font-semibold">{threat.risk_score} pont</span>
-                {showBreakdown ? (
-                  <ChevronUp className="w-3.5 h-3.5 text-brand-300" />
-                ) : (
-                  <ChevronDown className="w-3.5 h-3.5 text-[#9a9eb2]" />
-                )}
-              </div>
-            </button>
-
-            {showBreakdown && (
-              <div className="mt-2 p-3 rounded-xl bg-obsidian-950 border border-[#24283d] text-xs space-y-2.5">
-                <p className="text-[11px] text-[#c2c5d8] leading-relaxed">
-                  {threat.score_breakdown.summary}
-                </p>
-
-                <div className="space-y-1.5 pt-1 border-t border-[#24283d]">
-                  {threat.score_breakdown.factors.map((factor) => (
-                    <div
-                      key={factor.id}
-                      className="p-2 rounded-lg bg-[#161826]/70 border border-[#24283d] flex flex-col gap-1"
-                    >
-                      <div className="flex items-center justify-between">
-                        <span className="font-medium text-[#e9e9ed] text-[11px]">
-                          {factor.name}
-                        </span>
-                        <span
-                          className={`font-mono text-[10px] px-1.5 py-0.5 rounded font-semibold ${
-                            factor.score === 0
-                              ? 'text-emerald-400 bg-emerald-500/10 border border-emerald-500/20'
-                              : factor.score <= 5
-                              ? 'text-brand-300 bg-brand-500/10 border border-brand-500/20'
-                              : 'text-rose-400 bg-rose-500/10 border border-rose-500/20'
-                          }`}
-                        >
-                          +{factor.score} pont
-                        </span>
-                      </div>
-                      <p className="text-[10px] text-[#9a9eb2] leading-normal">
-                        {factor.description}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="pt-2 border-t border-[#24283d] flex items-center justify-between text-[11px]">
-                  <span className="text-[#9a9eb2]">Összegzés:</span>
-                  <span className="font-mono font-bold text-brand-300 text-xs">
-                    {threat.score_breakdown.factors.map(f => f.score).join(' + ')} = {threat.risk_score} / 100
-                  </span>
-                </div>
-              </div>
-            )}
-          </div>
+          <button
+            type="button"
+            onClick={() => setIsModalOpen(true)}
+            className="w-full mb-3 py-2 px-3 rounded-[5px] bg-[#836fe8]/15 hover:bg-[#836fe8]/25 text-[#d2cefd] border border-[#836fe8]/35 text-xs font-medium flex items-center justify-center gap-2 transition active:scale-[0.99]"
+          >
+            <Calculator className="w-3.5 h-3.5 text-[#836fe8]" />
+            <span>
+              {lang === 'hu'
+                ? `Miért pont ${threat.risk_score} / 100? Részletes pontszámítás`
+                : `Why ${threat.risk_score} / 100? Score Breakdown`}
+            </span>
+          </button>
         )}
       </div>
 
       {/* Security Context Advice */}
-      <div className="text-[11px] px-3 py-2 rounded-xl bg-obsidian-950/80 border border-[#24283d] text-[#9a9eb2] flex items-center gap-2 mt-2">
-        <Info className="w-3.5 h-3.5 text-brand-300 flex-shrink-0" />
-        <span className="truncate">
+      <div className="text-[11px] px-3 py-2 rounded-[5px] bg-obsidian-950/80 border border-[#24283d] text-[#9a9eb2] flex items-center gap-2 mt-2">
+        <Info className="w-3.5 h-3.5 text-[#836fe8] flex-shrink-0" />
+        <span className="leading-tight">
           {threat.is_vpn || threat.is_tor
             ? t.threat.dangerMessage
             : threat.is_datacenter
@@ -266,6 +204,14 @@ export const ThreatCard: React.FC<ThreatCardProps> = ({ threat, lang }) => {
             : t.threat.safeMessage}
         </span>
       </div>
+
+      {/* Modal Dialog */}
+      <ThreatBreakdownModal
+        threat={threat}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        lang={lang}
+      />
     </div>
   );
 };

@@ -13,13 +13,12 @@ import { BatchView } from './components/Batch/BatchView';
 import { RawJsonView } from './components/RawJson/RawJsonView';
 import { Footer } from './components/Footer';
 import { ActiveTab, Language, IpData } from './types/ip';
-import { fetchIpIntelligence, refineLocationWithGps, DEFAULT_WELLFINDER_IP } from './services/ipService';
+import { fetchIpIntelligence, DEFAULT_WELLFINDER_IP } from './services/ipService';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('dashboard');
   const [currentIpData, setCurrentIpData] = useState<IpData>(DEFAULT_WELLFINDER_IP);
   const [loading, setLoading] = useState(false);
-  const [gpsLoading, setGpsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [lang, setLang] = useState<Language>(() => {
     return (localStorage.getItem('wellfinder_lang') as Language) || 'hu';
@@ -28,30 +27,6 @@ export default function App() {
   const handleSetLang = (newLang: Language) => {
     setLang(newLang);
     localStorage.setItem('wellfinder_lang', newLang);
-  };
-
-  const handleGpsRefine = async () => {
-    setGpsLoading(true);
-    try {
-      const refined = await refineLocationWithGps();
-      setCurrentIpData((prev) => ({
-        ...prev,
-        city: refined.city,
-        region: refined.region || prev.region,
-        latitude: refined.latitude,
-        longitude: refined.longitude,
-        is_gps_verified: true,
-        isp_pop_city: prev.isp_pop_city || (prev.city !== refined.city ? `${prev.city} (GeoIP POP)` : undefined)
-      }));
-    } catch (err: any) {
-      alert(
-        lang === 'hu'
-          ? 'Nem sikerült lekérni a pontos helyzetet. Kérjük, engedélyezd a böngésző helyhozzáférését!'
-          : 'Could not retrieve precise location. Please allow browser location access!'
-      );
-    } finally {
-      setGpsLoading(false);
-    }
   };
 
   const handleSearch = async (target: string) => {
@@ -131,10 +106,6 @@ export default function App() {
               city={currentIpData.city}
               country={currentIpData.country}
               lang={lang}
-              isGpsVerified={currentIpData.is_gps_verified}
-              ispPopCity={currentIpData.isp_pop_city}
-              onGpsRefine={handleGpsRefine}
-              gpsLoading={gpsLoading}
             />
 
             {/* Network Deep Specifications */}

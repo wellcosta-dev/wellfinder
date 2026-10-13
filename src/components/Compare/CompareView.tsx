@@ -8,6 +8,7 @@ import {
 import { IpData, Language } from '../../types/ip';
 import { fetchIpIntelligence, DEFAULT_WELLFINDER_IP, SECONDARY_WELLFINDER_IP } from '../../services/ipService';
 import { translations } from '../../i18n/translations';
+import { CountryFlag } from '../common/CountryFlag';
 
 interface CompareViewProps {
   lang: Language;
@@ -49,9 +50,9 @@ export const CompareView: React.FC<CompareViewProps> = ({ lang }) => {
   return (
     <div className="space-y-6">
       {/* Control Card */}
-      <div className="bg-[#161826] border border-[#24283d] rounded-2xl p-5 sm:p-6 shadow-xl backdrop-blur-md">
+      <div className="bg-[#161826] border border-[#24283d] rounded-[5px] p-5 sm:p-6 shadow-xl backdrop-blur-md">
         <h3 className="text-lg font-bold text-[#e9e9ed] mb-1.5 flex items-center gap-2">
-          <Columns className="w-5 h-5 text-brand-300" />
+          <Columns className="w-5 h-5 text-[#9b8cf0]" />
           <span>{t.compare.title}</span>
         </h3>
         <p className="text-xs text-[#9a9eb2] mb-4">
@@ -64,16 +65,16 @@ export const CompareView: React.FC<CompareViewProps> = ({ lang }) => {
             value={target1}
             onChange={(e) => setTarget1(e.target.value)}
             placeholder={t.compare.ip1Placeholder}
-            className="flex-1 w-full px-4 py-2.5 bg-obsidian-950/90 border border-[#2d324d] rounded-xl text-sm font-mono text-[#e9e9ed] placeholder:text-[#6a6f8a] focus:outline-none focus:ring-1 focus:ring-brand-400"
+            className="flex-1 w-full px-4 py-2.5 bg-obsidian-950/90 border border-[#2d324d] rounded-[5px] text-sm font-mono text-[#e9e9ed] placeholder:text-[#6a6f8a] focus:outline-none focus:ring-1 focus:ring-[#836fe8]"
           />
 
           <button
             type="button"
             onClick={swapTargets}
-            className="p-2.5 rounded-xl bg-obsidian-900 hover:bg-[#1f2235] text-[#9a9eb2] hover:text-[#e9e9ed] border border-[#24283d] transition"
+            className="p-2.5 rounded-[5px] bg-obsidian-900 hover:bg-[#1f2235] text-[#9a9eb2] hover:text-[#e9e9ed] border border-[#24283d] transition"
             title="Célpontok megcserélése"
           >
-            <ArrowRightLeft className="w-4 h-4 text-brand-300" />
+            <ArrowRightLeft className="w-4 h-4 text-[#9b8cf0]" />
           </button>
 
           <input
@@ -81,18 +82,18 @@ export const CompareView: React.FC<CompareViewProps> = ({ lang }) => {
             value={target2}
             onChange={(e) => setTarget2(e.target.value)}
             placeholder={t.compare.ip2Placeholder}
-            className="flex-1 w-full px-4 py-2.5 bg-obsidian-950/90 border border-[#2d324d] rounded-xl text-sm font-mono text-[#e9e9ed] placeholder:text-[#6a6f8a] focus:outline-none focus:ring-1 focus:ring-brand-400"
+            className="flex-1 w-full px-4 py-2.5 bg-obsidian-950/90 border border-[#2d324d] rounded-[5px] text-sm font-mono text-[#e9e9ed] placeholder:text-[#6a6f8a] focus:outline-none focus:ring-1 focus:ring-[#836fe8]"
           />
 
           <button
             onClick={handleCompare}
             disabled={loading}
-            className="w-full sm:w-auto px-6 py-2.5 bg-brand-500 hover:bg-brand-400 text-obsidian-950 font-semibold text-xs rounded-xl transition flex items-center justify-center gap-2 shadow-sm disabled:opacity-50"
+            className="w-full sm:w-auto px-6 py-2.5 bg-[#836fe8] hover:bg-[#725ee4] active:bg-[#624ed4] text-white font-medium text-xs rounded-[5px] transition flex items-center justify-center gap-2 shadow-sm disabled:opacity-50"
           >
             {loading ? (
               <RefreshCw className="w-3.5 h-3.5 animate-spin" />
             ) : (
-              <Play className="w-3.5 h-3.5 fill-obsidian-950" />
+              <Play className="w-3.5 h-3.5 fill-white text-white" />
             )}
             <span>{t.compare.compareButton}</span>
           </button>
@@ -106,7 +107,7 @@ export const CompareView: React.FC<CompareViewProps> = ({ lang }) => {
               setTarget1('8.8.8.8');
               setTarget2('1.1.1.1');
             }}
-            className="px-2.5 py-1 rounded-lg bg-obsidian-950 border border-[#24283d] text-[#9a9eb2] hover:text-brand-300 transition"
+            className="px-2.5 py-1 rounded-[5px] bg-obsidian-950 border border-[#24283d] text-[#9a9eb2] hover:text-[#9b8cf0] transition"
           >
             Google (8.8.8.8) vs Cloudflare (1.1.1.1)
           </button>
@@ -115,7 +116,7 @@ export const CompareView: React.FC<CompareViewProps> = ({ lang }) => {
               setTarget1('9.9.9.9');
               setTarget2('208.67.222.222');
             }}
-            className="px-2.5 py-1 rounded-lg bg-obsidian-950 border border-[#24283d] text-[#9a9eb2] hover:text-brand-300 transition"
+            className="px-2.5 py-1 rounded-[5px] bg-obsidian-950 border border-[#24283d] text-[#9a9eb2] hover:text-[#9b8cf0] transition"
           >
             Quad9 vs OpenDNS
           </button>
@@ -127,12 +128,12 @@ export const CompareView: React.FC<CompareViewProps> = ({ lang }) => {
         {[data1, data2].map((data, idx) => (
           <div
             key={idx}
-            className="bg-[#161826] border border-[#24283d] rounded-2xl p-6 space-y-4 shadow-xl backdrop-blur-md"
+            className="bg-[#161826] border border-[#24283d] rounded-[5px] p-6 space-y-4 shadow-xl backdrop-blur-md"
           >
             {/* Header */}
             <div className="flex items-center justify-between border-b border-[#24283d] pb-4">
               <div className="flex items-center gap-3">
-                <span className="text-3xl">{data.flag}</span>
+                <CountryFlag countryCode={data.country_code} className="w-8 h-6 rounded-[2px]" />
                 <div>
                   <h4 className="font-mono font-bold text-xl text-[#e9e9ed]">
                     {data.ip}
@@ -142,7 +143,7 @@ export const CompareView: React.FC<CompareViewProps> = ({ lang }) => {
                   </span>
                 </div>
               </div>
-              <span className="text-xs font-mono px-3 py-1 rounded-lg bg-brand-500/10 text-brand-300 border border-brand-500/20 font-semibold">
+              <span className="text-xs font-mono px-3 py-1 rounded-[5px] bg-[#836fe8]/10 text-[#9b8cf0] border border-[#836fe8]/25 font-semibold">
                 {idx === 0 ? t.compare.host1 : t.compare.host2}
               </span>
             </div>
@@ -158,7 +159,7 @@ export const CompareView: React.FC<CompareViewProps> = ({ lang }) => {
 
               <div className="flex justify-between items-center py-1.5 border-b border-[#24283d]/60">
                 <span className="text-[#9a9eb2]">ASN:</span>
-                <span className="font-mono text-brand-300">{data.asn}</span>
+                <span className="font-mono text-[#9b8cf0]">{data.asn}</span>
               </div>
 
               <div className="flex justify-between items-center py-1.5 border-b border-[#24283d]/60">
@@ -200,7 +201,7 @@ export const CompareView: React.FC<CompareViewProps> = ({ lang }) => {
               <div className="flex justify-between items-center pt-2">
                 <span className="text-[#9a9eb2] font-medium">Kockázati Index:</span>
                 <span
-                  className={`font-mono font-semibold text-sm px-2.5 py-0.5 rounded-lg ${
+                  className={`font-mono font-semibold text-sm px-2.5 py-0.5 rounded-[5px] ${
                     data.threat?.risk_score > 50
                       ? 'bg-rose-500/15 text-rose-300 border border-rose-500/25'
                       : 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/25'

@@ -89,6 +89,48 @@ npm run preview
 
 ---
 
+## 🐳 Docker & Hostinger Telepítés (`wellfinder.hu`)
+
+A projekt fel van készítve közvetlen Git alapú Hostinger VPS vagy Docker telepítésre a mellékelt multi-stage `Dockerfile`, `docker-compose.yml` és `nginx.conf` segítségével.
+
+### 1. Domain & DNS beállítások (Hostinger hPanel)
+A Hostinger hPanel DNS zóna kezelőjében állítsd be a következő rekordokat a domainhez:
+| Típus | Név (Host) | Érték (Tartalom) | TTL |
+| :--- | :--- | :--- | :--- |
+| **A** | `@` | *A Hostinger VPS szervered nyilvános IPv4 címe* | 14400 |
+| **CNAME** | `www` | `wellfinder.hu` | 14400 |
+
+### 2. Első telepítés a Hostinger VPS-en (SSH)
+Lépj be SSH-n a VPS-re, majd hajtsd végre a következő lépéseket:
+
+```bash
+# 1. Frissítés és Docker telepítése (ha még nincs fent)
+sudo apt update && sudo apt install -y git docker.io docker-compose-plugin
+
+# 2. A git repository klónozása
+git clone https://github.com/wellcosta-dev/wellfinder.git /var/www/wellfinder.hu
+cd /var/www/wellfinder.hu
+
+# 3. Konténer építése és indítása a háttérben
+docker compose up -d --build
+```
+
+A weboldal azonnal elérhetővé válik a 80-as porton a `http://wellfinder.hu` címen.
+
+### 3. Ingyenes SSL (HTTPS) beállítása (Certbot)
+Ha közvetlenül a VPS-en szeretnél ingyenes Let's Encrypt SSL tanúsítványt:
+```bash
+sudo apt install -y certbot python3-certbot-nginx
+# Vagy Cloudflare ingyenes SSL proxy esetén egyetlen kattintással aktiválható!
+```
+
+### 4. Frissítés élesítése új kód felküldése után (1 parancs)
+Amikor helyi gépen frissíted a kódot és push-olod (`git push origin main`), a szerveren csak ezt kell futtatnod:
+```bash
+cd /var/www/wellfinder.hu && git pull && docker compose up -d --build
+```
+
+
 ## 📂 Mappaszerkezet
 
 ```

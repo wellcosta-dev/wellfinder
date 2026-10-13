@@ -75,7 +75,7 @@ export async function fetchLiveDnsRecords(target: string): Promise<DnsRecord[]> 
     console.warn('DNS lookup failed:', err);
   }
 
-  return records.length > 0 ? records : [
-    { type: 'A', value: cleanTarget, ttl: 300 }
-  ];
+  // Return real found records, or empty array if domain does not exist or has no records
+  return records;
 }
+

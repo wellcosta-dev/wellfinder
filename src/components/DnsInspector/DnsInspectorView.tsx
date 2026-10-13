@@ -23,6 +23,7 @@ export const DnsInspectorView: React.FC<DnsInspectorViewProps> = ({
 }) => {
   const [domain, setDomain] = useState(initialTarget || 'wellcosta.dev');
   const [loading, setLoading] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
   const [records, setRecords] = useState<DnsRecord[]>([]);
   const [selectedType, setSelectedType] = useState<string>('ALL');
   const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
@@ -34,6 +35,7 @@ export const DnsInspectorView: React.FC<DnsInspectorViewProps> = ({
     if (!domain.trim()) return;
 
     setLoading(true);
+    setHasSearched(true);
     const start = performance.now();
     try {
       const recs = await fetchLiveDnsRecords(domain);
@@ -58,9 +60,9 @@ export const DnsInspectorView: React.FC<DnsInspectorViewProps> = ({
   return (
     <div className="space-y-6">
       {/* Search Header */}
-      <div className="bg-[#161826] border border-[#24283d] rounded-2xl p-5 sm:p-6 backdrop-blur-md shadow-xl">
+      <div className="bg-[#161826] border border-[#24283d] rounded-[5px] p-5 sm:p-6 backdrop-blur-md shadow-xl">
         <div className="flex items-center gap-2.5 mb-2">
-          <div className="p-2 rounded-xl bg-brand-500/10 text-brand-300 border border-brand-500/20">
+          <div className="p-2 rounded-[5px] bg-[#836fe8]/10 text-brand-300 border border-[#836fe8]/20">
             <Radio className="w-5 h-5" />
           </div>
           <div>
@@ -81,14 +83,14 @@ export const DnsInspectorView: React.FC<DnsInspectorViewProps> = ({
               value={domain}
               onChange={(e) => setDomain(e.target.value)}
               placeholder={t.dns.domainInput}
-              className="w-full pl-10 pr-4 py-2.5 bg-obsidian-950/90 border border-[#2d324d] rounded-xl text-sm font-mono text-[#e9e9ed] placeholder:text-[#6a6f8a] focus:outline-none focus:ring-1 focus:ring-brand-400"
+              className="w-full pl-10 pr-4 py-2.5 bg-obsidian-950/90 border border-[#2d324d] rounded-[5px] text-sm font-mono text-[#e9e9ed] placeholder:text-[#6a6f8a] focus:outline-none focus:ring-1 focus:ring-[#836fe8] focus:border-[#836fe8]"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full sm:w-auto px-6 py-2.5 bg-brand-500 hover:bg-brand-400 text-obsidian-950 font-semibold text-xs rounded-xl transition flex items-center justify-center gap-2 shadow-sm disabled:opacity-50"
+            className="w-full sm:w-auto px-6 py-2.5 bg-[#836fe8] hover:bg-[#725ee4] active:bg-[#634ed6] text-white font-medium text-xs rounded-[5px] transition flex items-center justify-center gap-2 shadow-sm disabled:opacity-50"
           >
             {loading ? (
               <RefreshCw className="w-3.5 h-3.5 animate-spin" />
@@ -108,9 +110,9 @@ export const DnsInspectorView: React.FC<DnsInspectorViewProps> = ({
             <button
               key={type}
               onClick={() => setSelectedType(type)}
-              className={`px-3 py-1 rounded-lg text-xs font-mono font-medium transition ${
+              className={`px-3 py-1 rounded-[5px] text-xs font-mono font-medium transition ${
                 selectedType === type
-                  ? 'bg-brand-500 text-obsidian-950 font-semibold shadow-sm'
+                  ? 'bg-[#836fe8] text-white font-semibold shadow-sm'
                   : 'bg-obsidian-950 border border-[#24283d] text-[#9a9eb2] hover:text-[#e9e9ed]'
               }`}
             >
@@ -127,7 +129,7 @@ export const DnsInspectorView: React.FC<DnsInspectorViewProps> = ({
 
       {/* Results View */}
       {filteredRecords.length > 0 ? (
-        <div className="bg-[#161826] border border-[#24283d] rounded-2xl overflow-hidden shadow-xl">
+        <div className="bg-[#161826] border border-[#24283d] rounded-[5px] overflow-hidden shadow-xl">
           <div className="p-4 sm:p-5 border-b border-[#24283d] flex items-center justify-between">
             <span className="text-sm font-semibold text-[#e9e9ed]">
               Találatok ({filteredRecords.length} rekord)
@@ -143,7 +145,7 @@ export const DnsInspectorView: React.FC<DnsInspectorViewProps> = ({
                 a.download = `dns_${domain}_${Date.now()}.json`;
                 a.click();
               }}
-              className="text-xs px-3 py-1.5 rounded-lg bg-obsidian-900 hover:bg-[#1f2235] text-[#e9e9ed] flex items-center gap-1.5 border border-[#24283d] transition"
+              className="text-xs px-3 py-1.5 rounded-[5px] bg-obsidian-900 hover:bg-[#1f2235] text-[#e9e9ed] flex items-center gap-1.5 border border-[#24283d] transition"
             >
               <Download className="w-3.5 h-3.5 text-brand-300" />
               <span>JSON Export</span>
@@ -164,7 +166,7 @@ export const DnsInspectorView: React.FC<DnsInspectorViewProps> = ({
                 {filteredRecords.map((rec, idx) => (
                   <tr key={idx} className="hover:bg-white/[0.02] transition">
                     <td className="p-4">
-                      <span className="px-2 py-0.5 rounded text-[11px] font-semibold bg-brand-500/10 text-brand-300 border border-brand-500/20">
+                      <span className="px-2 py-0.5 rounded-[3px] text-[11px] font-semibold bg-[#836fe8]/15 text-[#d2cefd] border border-[#836fe8]/30">
                         {rec.type}
                       </span>
                     </td>
@@ -177,7 +179,7 @@ export const DnsInspectorView: React.FC<DnsInspectorViewProps> = ({
                     <td className="p-4 text-right">
                       <button
                         onClick={() => handleCopy(rec.value, idx)}
-                        className="p-1.5 rounded-lg bg-obsidian-900 hover:bg-[#1f2235] text-[#9a9eb2] hover:text-[#e9e9ed] border border-[#24283d] transition"
+                        className="p-1.5 rounded-[5px] bg-obsidian-900 hover:bg-[#1f2235] text-[#9a9eb2] hover:text-[#e9e9ed] border border-[#24283d] transition"
                         title="Érték másolása"
                       >
                         {copiedIdx === idx ? (
@@ -193,8 +195,13 @@ export const DnsInspectorView: React.FC<DnsInspectorViewProps> = ({
             </table>
           </div>
         </div>
+      ) : hasSearched ? (
+        <div className="bg-obsidian-950/70 border border-[#24283d] rounded-[5px] p-8 text-center text-[#9a9eb2]">
+          <p className="text-sm font-semibold text-[#e9e9ed]">Nem található érvényes DNS rekord (NXDOMAIN)</p>
+          <p className="text-xs text-[#9a9eb2] mt-1">A megadott domain vagy hosztnév nem létezik, vagy nem konfiguráltak hozzá aktív rekordot.</p>
+        </div>
       ) : (
-        <div className="bg-obsidian-950/40 border border-dashed border-[#24283d] rounded-2xl p-10 text-center text-[#9a9eb2]">
+        <div className="bg-obsidian-950/40 border border-dashed border-[#24283d] rounded-[5px] p-10 text-center text-[#9a9eb2]">
           Kattints a "Rekordok lekérése" gombra a DNS adatok betöltéséhez.
         </div>
       )}

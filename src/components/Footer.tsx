@@ -25,7 +25,7 @@ export const Footer: React.FC<FooterProps> = ({ lang }) => {
               href="https://wellcosta.dev"
               target="_blank"
               rel="noreferrer"
-              className="text-brand-300 hover:text-brand-200 font-semibold inline-flex items-center gap-1 transition"
+              className="text-[#9b8cf0] hover:text-white font-semibold inline-flex items-center gap-1 transition"
             >
               Wellcosta Development <ExternalLink className="w-3 h-3" />
             </a>
@@ -37,11 +37,11 @@ export const Footer: React.FC<FooterProps> = ({ lang }) => {
 
         <div className="flex items-center gap-4 text-[#9a9eb2] text-xs">
           <span className="flex items-center gap-1.5">
-            <ShieldCheck className="w-4 h-4 text-brand-300" />
+            <ShieldCheck className="w-4 h-4 text-[#9b8cf0]" />
             <span>End-to-End Titkosított</span>
           </span>
           <span>•</span>
-          <span className="text-[#6c728e] font-mono">v3.0 Production Build</span>
+          <span className="text-[#6c728e] font-mono">Production Build</span>
         </div>
       </div>
     </footer>

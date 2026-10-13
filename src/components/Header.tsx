@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { ActiveTab, Language } from '../types/ip';
 import { translations } from '../i18n/translations';
+import { CountryFlag } from './common/CountryFlag';
 
 interface HeaderProps {
   activeTab: ActiveTab;
@@ -48,23 +49,18 @@ export const Header: React.FC<HeaderProps> = ({
               className="h-9 w-9 object-contain"
             />
             <span className="font-semibold text-lg text-[#e9e9ed] tracking-tight">
-              well<span className="text-brand-300">finder</span>
+              well<span className="text-[#9b8cf0]">finder</span>
             </span>
           </div>
-
-          {/* Version badge */}
-          <span className="hidden md:inline-flex text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-brand-500/10 text-brand-300 border border-brand-500/20">
-            {t.badge}
-          </span>
         </div>
 
         {/* Navigation Tabs */}
-        <nav className="flex items-center gap-1 bg-obsidian-900/90 p-1 rounded-xl border border-[#24283d]">
+        <nav className="flex items-center gap-1 bg-obsidian-900/90 p-1 rounded-[5px] border border-[#24283d]">
           <button
             onClick={() => setActiveTab('dashboard')}
-            className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 text-xs font-medium rounded-[5px] transition-all flex items-center gap-1.5 ${
               activeTab === 'dashboard'
-                ? 'bg-brand-500 text-obsidian-950 font-semibold shadow-sm'
+                ? 'bg-[#836fe8] text-white font-semibold shadow-sm'
                 : 'text-[#9a9eb2] hover:text-[#e9e9ed] hover:bg-white/[0.04]'
             }`}
           >
@@ -74,9 +70,9 @@ export const Header: React.FC<HeaderProps> = ({
 
           <button
             onClick={() => setActiveTab('dns')}
-            className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 text-xs font-medium rounded-[5px] transition-all flex items-center gap-1.5 ${
               activeTab === 'dns'
-                ? 'bg-brand-500 text-obsidian-950 font-semibold shadow-sm'
+                ? 'bg-[#836fe8] text-white font-semibold shadow-sm'
                 : 'text-[#9a9eb2] hover:text-[#e9e9ed] hover:bg-white/[0.04]'
             }`}
           >
@@ -86,9 +82,9 @@ export const Header: React.FC<HeaderProps> = ({
 
           <button
             onClick={() => setActiveTab('compare')}
-            className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 text-xs font-medium rounded-[5px] transition-all flex items-center gap-1.5 ${
               activeTab === 'compare'
-                ? 'bg-brand-500 text-obsidian-950 font-semibold shadow-sm'
+                ? 'bg-[#836fe8] text-white font-semibold shadow-sm'
                 : 'text-[#9a9eb2] hover:text-[#e9e9ed] hover:bg-white/[0.04]'
             }`}
           >
@@ -98,9 +94,9 @@ export const Header: React.FC<HeaderProps> = ({
 
           <button
             onClick={() => setActiveTab('batch')}
-            className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 text-xs font-medium rounded-[5px] transition-all flex items-center gap-1.5 ${
               activeTab === 'batch'
-                ? 'bg-brand-500 text-obsidian-950 font-semibold shadow-sm'
+                ? 'bg-[#836fe8] text-white font-semibold shadow-sm'
                 : 'text-[#9a9eb2] hover:text-[#e9e9ed] hover:bg-white/[0.04]'
             }`}
           >
@@ -110,9 +106,9 @@ export const Header: React.FC<HeaderProps> = ({
 
           <button
             onClick={() => setActiveTab('raw')}
-            className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 text-xs font-medium rounded-[5px] transition-all flex items-center gap-1.5 ${
               activeTab === 'raw'
-                ? 'bg-brand-500 text-obsidian-950 font-semibold shadow-sm'
+                ? 'bg-[#836fe8] text-white font-semibold shadow-sm'
                 : 'text-[#9a9eb2] hover:text-[#e9e9ed] hover:bg-white/[0.04]'
             }`}
           >
@@ -125,10 +121,11 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex items-center gap-2">
           <button
             onClick={() => setLang(lang === 'hu' ? 'en' : 'hu')}
-            className="px-2.5 py-1.5 rounded-lg border border-[#24283d] bg-obsidian-900/80 hover:bg-[#1c1f30] text-xs font-medium text-[#e9e9ed] transition flex items-center gap-1.5"
+            className="px-2.5 py-1.5 rounded-[5px] border border-[#24283d] bg-obsidian-900/80 hover:bg-[#1c1f30] text-xs font-medium text-[#e9e9ed] transition flex items-center gap-2"
             title="Nyelv váltása / Switch Language"
           >
-            <span>{lang === 'hu' ? '🇭🇺 HU' : '🇬🇧 EN'}</span>
+            <CountryFlag countryCode={lang === 'hu' ? 'HU' : 'GB'} className="w-4 h-3 rounded-[2px]" />
+            <span className="font-medium text-[11px] tracking-wide">{lang === 'hu' ? 'HU' : 'EN'}</span>
           </button>
         </div>
       </div>

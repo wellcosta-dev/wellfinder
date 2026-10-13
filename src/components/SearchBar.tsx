@@ -50,7 +50,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   ];
 
   return (
-    <section className="bg-obsidian-900/90 border border-[#24283d] rounded-2xl p-4 sm:p-5 shadow-xl relative overflow-hidden backdrop-blur-md">
+    <section className="bg-obsidian-900/90 border border-[#24283d] rounded-[5px] p-4 sm:p-5 shadow-xl relative overflow-hidden backdrop-blur-md">
       {/* Search Input Row */}
       <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row items-center gap-2.5">
         <div className="relative flex-1 w-full">
@@ -60,13 +60,17 @@ export const SearchBar: React.FC<SearchBarProps> = ({
             value={inputVal}
             onChange={(e) => setInputVal(e.target.value)}
             placeholder={t.searchPlaceholder}
-            className="w-full pl-10 pr-9 py-2.5 bg-obsidian-950/90 border border-[#2d324d] rounded-xl text-sm text-[#e9e9ed] placeholder:text-[#6a6f8a] focus:outline-none focus:ring-1 focus:ring-brand-400 focus:border-brand-400 transition font-sans"
+            autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="off"
+            spellCheck={false}
+            className="w-full pl-10 pr-9 py-2.5 bg-[#0e101a] border border-[#2d324d] rounded-[5px] text-sm text-white font-medium placeholder:text-[#6a6f8a] focus:outline-none focus:ring-1 focus:ring-[#836fe8] focus:border-[#836fe8] transition font-sans shadow-inner selection:bg-[#836fe8] selection:text-white"
           />
           {inputVal && (
             <button
               type="button"
               onClick={() => setInputVal('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9a9eb2] hover:text-[#e9e9ed]"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9a9eb2] hover:text-white"
             >
               <X className="w-4 h-4" />
             </button>
@@ -77,7 +81,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
           <button
             type="submit"
             disabled={loading}
-            className="flex-1 sm:flex-none px-5 py-2.5 bg-brand-500 hover:bg-brand-400 active:scale-95 text-obsidian-950 font-semibold text-xs rounded-xl transition flex items-center justify-center gap-2 shadow-sm disabled:opacity-50"
+            className="flex-1 sm:flex-none px-5 py-2.5 bg-[#836fe8] hover:bg-[#725ee4] active:bg-[#624ed4] text-white font-medium text-xs rounded-[5px] transition flex items-center justify-center gap-2 shadow-sm disabled:opacity-50"
           >
             {loading ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Search className="w-3.5 h-3.5" />}
             <span>{loading ? t.searching : t.searchButton}</span>
@@ -89,17 +93,17 @@ export const SearchBar: React.FC<SearchBarProps> = ({
               setInputVal('');
               onSearch('');
             }}
-            className="px-3.5 py-2.5 bg-[#161826] hover:bg-[#1f2235] text-[#e9e9ed] text-xs rounded-xl border border-[#24283d] transition flex items-center gap-1.5 font-medium"
+            className="px-3.5 py-2.5 bg-[#161826] hover:bg-[#1f2235] text-[#e9e9ed] text-xs rounded-[5px] border border-[#24283d] transition flex items-center gap-1.5 font-medium"
             title="Lekérdezés a saját IP címedre"
           >
-            <Navigation className="w-3.5 h-3.5 text-brand-300" />
+            <Navigation className="w-3.5 h-3.5 text-[#9b8cf0]" />
             <span className="hidden md:inline">{t.myIpButton}</span>
           </button>
 
           <button
             type="button"
             onClick={handleShare}
-            className="p-2.5 bg-[#161826] hover:bg-[#1f2235] text-[#e9e9ed] rounded-xl border border-[#24283d] transition"
+            className="p-2.5 bg-[#161826] hover:bg-[#1f2235] text-[#e9e9ed] rounded-[5px] border border-[#24283d] transition"
             title={t.shareLink}
           >
             {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Share2 className="w-4 h-4 text-[#9a9eb2]" />}
@@ -118,7 +122,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
               setInputVal(preset.value);
               onSearch(preset.value);
             }}
-            className="text-[11px] px-2.5 py-1 rounded-lg bg-[#161826] border border-[#24283d] text-[#9a9eb2] hover:text-brand-300 hover:border-brand-500/40 transition font-mono"
+            className="text-[11px] px-2.5 py-1 rounded-[5px] bg-[#161826] border border-[#24283d] text-[#9a9eb2] hover:text-[#9b8cf0] hover:border-[#836fe8]/40 transition font-mono"
           >
             {preset.label}
           </button>
@@ -127,7 +131,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
 
       {/* Error Message */}
       {errorMsg && (
-        <div className="mt-3 text-xs px-3.5 py-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 flex items-center gap-2">
+        <div className="mt-3 text-xs px-3.5 py-2.5 rounded-[5px] bg-amber-500/10 border border-amber-500/30 text-amber-300 flex items-center gap-2">
           <ShieldAlert className="w-4 h-4 flex-shrink-0 text-amber-400" />
           <span>{errorMsg}</span>
         </div>

@@ -26,21 +26,21 @@ export const DnsCard: React.FC<DnsCardProps> = ({
   };
 
   return (
-    <div className="bg-[#161826] border border-[#24283d] rounded-2xl p-5 shadow-xl flex flex-col justify-between">
+    <div className="bg-[#161826] border border-[#24283d] rounded-[5px] p-5 shadow-lg flex flex-col justify-between">
       <div>
         {/* Card Header */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-brand-500/10 text-brand-300 border border-brand-500/20">
+            <div className="w-8 h-8 rounded-[5px] bg-[#836fe8]/10 text-[#9b8cf0] border border-[#836fe8]/25 flex items-center justify-center">
               <Database className="w-4 h-4" />
             </div>
-            <h3 className="font-semibold text-[#e9e9ed] text-sm">
+            <h3 className="font-semibold text-[#e9e9ed] text-xs">
               {t.dns.title}
             </h3>
           </div>
           <button
             onClick={onNavigateToDnsTab}
-            className="text-[11px] text-brand-300 hover:text-brand-200 flex items-center gap-1 font-medium transition"
+            className="text-[11px] text-[#9b8cf0] hover:text-white flex items-center gap-1 font-medium transition"
           >
             <span>Részletes</span>
             <ArrowRight className="w-3 h-3" />
@@ -48,18 +48,18 @@ export const DnsCard: React.FC<DnsCardProps> = ({
         </div>
 
         {/* Reverse DNS PTR */}
-        <div className="p-2.5 rounded-xl bg-obsidian-950/80 border border-[#24283d] mb-3">
-          <span className="text-[#9a9eb2] block text-[10px] font-medium uppercase tracking-wider mb-1">
+        <div className="p-2.5 rounded-[5px] bg-obsidian-950/80 border border-[#24283d] mb-3">
+          <span className="text-[#8e93ad] block text-[10px] font-medium uppercase tracking-wider mb-1">
             {t.dns.hostname}
           </span>
           <div className="flex items-center justify-between gap-2">
-            <span className="font-mono text-brand-300 text-xs break-all truncate">
+            <span className="font-mono text-[#9b8cf0] text-xs break-all truncate">
               {hostname || 'N/A (Nincs konfigurált PTR rekord)'}
             </span>
             {hostname && (
               <button
                 onClick={() => handleCopy(hostname, -1)}
-                className="text-[#6c728e] hover:text-[#e9e9ed] p-1 rounded"
+                className="text-[#6c728e] hover:text-[#e9e9ed] p-1 rounded-[3px]"
                 title="PTR másolása"
               >
                 {copiedIndex === -1 ? (
@@ -80,10 +80,10 @@ export const DnsCard: React.FC<DnsCardProps> = ({
           {dnsRecords.map((rec, idx) => (
             <div
               key={idx}
-              className="p-2 rounded-xl bg-obsidian-950/60 border border-[#24283d] flex items-center justify-between text-xs font-mono hover:border-brand-500/30 transition"
+              className="p-2 rounded-[5px] bg-obsidian-950/60 border border-[#24283d] flex items-center justify-between text-xs font-mono hover:border-[#836fe8]/30 transition"
             >
               <div className="flex items-center gap-2 truncate">
-                <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-brand-500/10 text-brand-300 border border-brand-500/20">
+                <span className="px-1.5 py-0.5 rounded-[3px] text-[10px] font-bold bg-[#836fe8]/10 text-[#9b8cf0] border border-[#836fe8]/25">
                   {rec.type}
                 </span>
                 <span className="text-[#e9e9ed] truncate max-w-[150px]" title={rec.value}>
@@ -110,9 +110,9 @@ export const DnsCard: React.FC<DnsCardProps> = ({
         </div>
       </div>
 
-      <div className="pt-3 border-t border-[#24283d] mt-3 flex justify-between items-center text-[11px] text-[#9a9eb2]">
+      <div className="pt-3 border-t border-[#24283d] mt-3 flex justify-between items-center text-[11px] text-[#8e93ad]">
         <span>Cloudflare 1.1.1.1 DoH motor</span>
-        <span className="text-emerald-400 font-mono">200 OK</span>
+        <span className="text-emerald-400 font-mono text-[10px]">200 OK</span>
       </div>
     </div>
   );
